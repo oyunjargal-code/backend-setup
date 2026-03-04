@@ -2,82 +2,43 @@ import express from "express";
 import { Request, Response } from "express";
 import { todo } from "node:test";
 
-let todos = [
-  {
-    id: 1,
-    title: "Hello",
-    isComplete: false,
-  },
-  {
-    id: 2,
-    title: "World",
-    isComplete: false,
-  },
-];
-
 const server = express();
 const port = 3000;
 
 server.use(express.json());
 
-server.get("/todo", (_req: Request, res: Response) => {
-  res.status(200).send(todos);
-});
+// 1-р даалгавар: Params (Замын хувьсагч)
+// Тайлбар: URL-ийн зам доторх хувьсагчийг :variableName ашиглан тодорхойлдог.
+// Даалгавар: /student/:name зам үүсгэж, URL дээр бичигдсэн нэрийг дэлгэцэнд "Сайн байна уу, [нэр]!" гэж харуул.
+// Турших URL: http://localhost:3000/student/bat
 
-server.post("/todo", (req: Request, res: Response) => {
-  const { title } = req.body;
+// server.get("/student/:name", (req: Request, res: Response) => {
+//   res.status(200).send(`sain bna uu? ${req.params.name}`);
 
-  const newTodo = {
-    id: 3,
-    title,
-    isComplete: false,
-  };
+//   console.log("okey");
+// });
 
-  const updatedTodos = [...todos, newTodo];
+// 2-р даалгавар: Query (Хайлтын мөр)
+// Тайлбар: URL-ийн ард ? тэмдгээр зааглагдаж ирдэг нэмэлт өгөгдөл.
+// Даалгавар: /filter зам үүсгэж, city болон age гэсэн query-г уншиж аваад JSON хэлбэрээр буцаа.
+// Турших URL: http://localhost:3000/filter?city=Ulaanbaatar&age=20
 
-  todos = updatedTodos;
+// server.get("/filter", (req: Request, res: Response) => {
+//   const { city, age } = req.query;
+//   res.status(200).json({ city: city, age: age });
 
-  res.status(200).json(todos);
-});
+//   console.log("okey");
+// });
 
-server.put("/todo/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
+// 3-р даалгавар: Headers (Толгой мэдээлэл)
+// Тайлбар: Хэрэглэгчийн харагдах орчинд биш, хүсэлтийн далд мета өгөгдөлд байдаг мэдээлэл.
+// Даалгавар: Хүсэлтийн header-ээс user-agent (хөтөч) болон auth-token гэсэн мэдээллийг авч консол дээр хэвлэ.
+// Турших хэрэгсэл: Postman эсвэл Hoppscotch ашиглан Header хэсэгт утга өгч шалгана.
 
-  const { title, isComplete } = req.body;
+server.get("/headers", (req: Request, res: Response) => {
+  res.status(200).send("ok");
 
-  const updatedTodos = todos.map((todo) => {
-    if (String(todo.id) === id) {
-      const updateTodos = {
-        id: todo.id,
-        title: title,
-        isComplete: isComplete,
-      };
-      return updateTodos;
-    } else {
-      return todo;
-    }
-  });
-
-  todos = updatedTodos;
-
-  res.status(200).send(todos);
-});
-
-server.delete("/todo/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  const foundedTodo = todos.find((todo) => String(todo.id) === id);
-
-  if (!foundedTodo) {
-    res.status(404).send({ message: "not found" });
-    return;
-  }
-
-  const filteredTodos = todos.filter((todo) => String(todo.id) !== id);
-
-  console.log(filteredTodos);
-
-  res.status(200).send({ message: "successfully", todos });
+  console.log("okey");
 });
 
 server.listen(port, () => {
