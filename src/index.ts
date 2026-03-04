@@ -48,7 +48,15 @@ server.put("/books/:id", (req: Request, res: Response) => {
 //   res.send("hello");
 // });
 
-server.get("/books", (req: Request, res: Response) => {
+server.get("/books/:id", (req: Request, res: Response) => {
+  const query = req.query;
+  const { id } = req.params;
+  const path = req.path;
+  const result = req.baseUrl;
+  console.log(query);
+  console.log("id", id);
+  console.log("result", result);
+
   res.status(200).send(books);
 });
 
