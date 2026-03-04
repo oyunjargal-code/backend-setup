@@ -1,17 +1,17 @@
 import express from "express";
 import { Request, Response } from "express";
-import { title } from "node:process";
+import { todo } from "node:test";
 
-let books = [
-  {
-    id: 2,
-    title: "Nom1",
-    author: "Bat",
-  },
+let todos = [
   {
     id: 1,
-    title: "Nom2",
-    author: "Bat",
+    title: "Hello",
+    isComplete: false,
+  },
+  {
+    id: 2,
+    title: "World",
+    isComplete: false,
   },
 ];
 
@@ -20,100 +20,66 @@ const port = 3000;
 
 server.use(express.json());
 
-server.put("/books/:id", (req: Request, res: Response) => {
+server.get("/todo", (_req: Request, res: Response) => {
+  res.status(200).send(todos);
+});
+
+server.post("/todo", (req: Request, res: Response) => {
+  const { title } = req.body;
+
+  const newTodo = {
+    id: 3,
+    title,
+    isComplete: false,
+  };
+
+  const updatedTodos = [...todos, newTodo];
+
+  todos = updatedTodos;
+
+  res.status(200).json(todos);
+});
+
+server.put("/todo/:id", (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const { title, author } = req.body;
+  const { title, isComplete } = req.body;
 
-  books = books.map((book) => {
-    if (String(book.id) === id) {
-      const updatedBooks = {
-        id: book.id,
+  const updatedTodos = todos.map((todo) => {
+    if (String(todo.id) === id) {
+      const updateTodos = {
+        id: todo.id,
         title: title,
-        author: author,
+        isComplete: isComplete,
       };
-      return updatedBooks;
+      return updateTodos;
     } else {
-      return book;
+      return todo;
     }
   });
 
-  console.log(id);
-  // const { title, author } = req.body;
+  todos = updatedTodos;
 
-  res.status(200).send(books);
+  res.status(200).send(todos);
 });
 
-// server.get("/", (req: Request, res: Response) => {
-//   res.send("hello");
-// });
-
-server.get("/books/:id", (req: Request, res: Response) => {
-  const query = req.query;
+server.delete("/todo/:id", (req: Request, res: Response) => {
   const { id } = req.params;
-  const path = req.path;
-  const result = req.baseUrl;
-  console.log(query);
-  console.log("id", id);
-  console.log("result", result);
 
-  res.status(200).send(books);
+  const foundedTodo = todos.find((todo) => String(todo.id) === id);
+
+  if (!foundedTodo) {
+    res.status(404).send({ message: "not found" });
+    return;
+  }
+
+  const filteredTodos = todos.filter((todo) => String(todo.id) !== id);
+
+  console.log(filteredTodos);
+
+  res.status(200).send({ message: "successfully", todos });
 });
-
-// server.get("/books/:id", (req: Request, res: Response) => {
-//   const { id } = req.params;
-
-//   const book = books.find((book) => String(book.id) === String(id));
-//   console.log(book);
-//   res.status(200).send(book);
-// });
-
-// server.post("/books", (req: Request, res: Response) => {
-//   const { title, author } = req.body;
-
-//   const newBookID = books.length + 1;
-
-//   const newBook = { id: newBookID, title, author };
-
-//   books.push(newBook);
-
-//   console.log(books);
-
-//   res.send(books);
-// });
 
 server.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
-
-// let books = [
-//   {
-//     id: 2,
-//     title: "Nom1",
-//     author: "Bat",
-//   },
-//   {
-//     id: 1,
-//     title: "Nom2",
-//     author: "Bat",
-//   },
-// ];
-
-// const updateBookId = 2;
-
-// books = books.map((book) => {
-//   if (book.id === updateBookId) {
-//     const newBook = {
-//       id: updateBookId,
-//       title: "Garchig",
-//       author: "Derem",
-//     };
-//     return newBook;
-//     // update hiine}
-//   } else {
-//     //update hiihgui
-//     return book;
-//   }
-// });
-
-// console.log(updatedBooks);
