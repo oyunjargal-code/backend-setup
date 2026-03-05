@@ -1,55 +1,51 @@
 import express from "express";
-import { Request, Response } from "express";
-import { todo } from "node:test";
-import { readBooks } from "./utils/read-books.js";
-import { Book } from "./utils/types.js";
-import { isDataView } from "node:util/types";
-import { writeBooks } from "./utils/write-books.js";
+import fs from "fs";
 
-const server = express();
-const port = 3000;
+// const server = express();
+// const port = 3000;
 
-server.use(express.json());
+// server.use(express.json());
 
-server.get("/books", async (req: Request, res: Response) => {
-  const books = await readBooks();
+// 🟢 Хялбар
+// 1. hello.txt файл үүсгэж "Сайн байна уу!" гэж бич. Дараа нь тэр файлыг уншаад консолд хэвлэ.
 
-  if (!books) {
-    return res.status(500).json({ message: "failed", books: [] });
-  }
+// fs.writeFileSync("hello.txt", "Sain bna uu?");
 
-  res.status(200).json({ message: "success", books });
-});
+// const content = fs.readFileSync("hello.txt", "utf-8");
+// console.log(content);
 
-server.get("/books/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
+// server.listen(port, () => {
+//   console.log(`Server is running on http://localhost:${port}`);
+// });
 
-  const books = await readBooks();
+// 2. name.txt файлд өөрийнхөө нэрийг бич. Дараа нь уншаад "Миний нэр: [нэр]" гэж консолд хэвлэ.
 
-  if (!books) {
-    return res.status(500).json({ message: "failed", books: [] });
-  }
+// fs.writeFileSync("name.txt", "Oyunjargal");
 
-  const book = books.find((book) => String(book.id) === id);
+// const content = fs.readFileSync("name.txt", "utf-8");
 
-  if (!book) {
-    return res.status(500).json({ message: "book not found", book: null });
-  }
+// console.log(`Minii ner ${content}`);
 
-  res.status(200).json({ message: "success", book });
-});
-server.post("/create-book", async (req: Request, res: Response) => {
-  const { title, author } = req.body;
+// 3. numbers.txt файлд 1-ээс 5 хүртэлх тоог мөр бүрт нэг тоо бич.
+// 1
+// 2
+// 3
+// 4
+// 5
 
-  const newBook = {
-    id: Math.floor(Math.random() * 100),
-    title,
-    author,
-  };
+// let content = "";
 
-  const updated = await writeBooks(newBook);
-  res.status(200).json({ message: "Amjilltai nemegdlee", data: updated });
-});
-server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+// for (let i = 1; i <= 5; i++) {
+//   content += i + "\n";
+//   console.log(i);
+// }
+// console.log("Bichej duuslaa");
+
+// fs.writeFileSync("number.txt", content);
+
+// 🟡 Дунд
+// 4. counter.txt файлд 0 гэж бич. Программ ажиллах бүрт тоог +1 нэмээд буцааж бич. (Файлыг уншиж тоо авна, нэмнэ, буцааж бичнэ)
+
+fs.writeFileSync("counter.txt", "0");
+const readFile = Number(fs.readFileSync("counter.txt", "utf-8"));
+console.log(readFile);

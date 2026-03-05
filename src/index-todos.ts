@@ -1,6 +1,5 @@
 import express from "express";
 import { Request, Response } from "express";
-import { todo } from "node:test";
 
 let todos = [
   {

@@ -1,18 +1,10 @@
 import fs from "node:fs/promises";
 import { Book } from "./types.js";
-import { readBooks } from "./read-books.js";
 
-export async function writeBooks(newBook: Book) {
+export const writeBooks = async (books: Book[]) => {
   try {
-    const books = await readBooks();
-    if (!books) throw new Error("Cannot find file");
-
-    const updateData = [...books, newBook];
-
-    const data = await fs.writeFile("./books.json", JSON.stringify(updateData));
-
-    return data;
+    await fs.writeFile("./books.json", JSON.stringify(books));
   } catch (err) {
     console.log(err);
   }
-}
+};
