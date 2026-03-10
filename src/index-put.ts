@@ -1,52 +1,74 @@
 import express from "express";
 import { Request, Response } from "express";
-import { title } from "node:process";
-
-let books = [
-  {
-    id: 2,
-    title: "Nom1",
-    author: "Bat",
-  },
-  {
-    id: 1,
-    title: "Nom2",
-    author: "Bat",
-  },
-];
+import { request } from "node:http";
 
 const server = express();
 const port = 3000;
 
 server.use(express.json());
 
-server.put("/books/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
+// PUT-ийн 1-р бодлого
+// /user/:id зам үүсгэ. Body-гээс name, age-г авч доорх JSON буцаа:
+// json{
+//   "message": "Мэдээлэл шинэчлэгдлээ!",
+//   "id": "1",
+//   "name": "Bat",
+//   "age": 20
+// }
+// Санамж: server.put(...) ашиглана 😊
 
-  const { title, author } = req.body;
+// server.put("/user/:id", (req: Request, res: Response) => {
+//   const id = req.params.id;
+//   const { name, age } = req.body;
 
-  books = books.map((book) => {
-    if (String(book.id) === id) {
-      const updatedBooks = {
-        id: book.id,
-        title: title,
-        author: author,
-      };
-      return updatedBooks;
-    } else {
-      return book;
-    }
-  });
+//   return res
+//     .status(200)
+//     .json({ message: "Мэдээлэл шинэчлэгдлээ!", id, name, age });
+// });
 
-  console.log(id);
+// PUT 2-р бодлого 🟡
+// /product/:id зам үүсгэ. Body-гээс title, price-г авч доорх JSON буцаа:
+// json{
+//   "message": "Бүтээгдэхүүн шинэчлэгдлээ!",
+//   "id": "1",
+//   "title": "Утас",
+//   "price": 500000
+// }
 
-  res.status(200).send(books);
-});
+// server.put("/product/:id", (req: Request, res: Response) => {
+//   const id = req.params.id;
+//   const { title, price } = req.body;
 
-server.get("/books", (req: Request, res: Response) => {
-  res.status(200).send(books);
+//   return res
+//     .status(200)
+//     .json({ message: "Мэдээлэл шинэчлэгдлээ!", id, title, price });
+// });
+
+// 3-р бодлого руу орцгооё! 💪
+
+// PUT 3-р бодлого 🔴
+// /admin/user/:id зам үүсгэ. x-admin-token header байвал name, role-г өөрчлөөд JSON буцаа, байхгүй бол "Хандах эрхгүй!" буцаа:
+// json{
+//   "message": "Хэрэглэгч шинэчлэгдлээ!",
+//   "id": "1",
+//   "name": "Bat",
+//   "role": "admin"
+// }
+
+server.put("/admin/user/:id", (req: Request, res: Response) => {
+  const id = req.params.id;
+  const { name, role } = req.body;
+  const adminToke = req.headers["x-admin-token"];
+
+  if (adminToke) {
+    return res
+      .status(200)
+      .json({ message: "Хэрэглэгч шинэчлэгдлээ!", id, name, role });
+  } else {
+    return res.status(401).send("Хандах эрхгүй!");
+  }
 });
 
 server.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
