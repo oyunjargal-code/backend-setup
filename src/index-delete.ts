@@ -1,63 +1,60 @@
 import express from "express";
 import { Request, Response } from "express";
-
-let books = [
-  {
-    id: 2,
-    title: "Nom1",
-    author: "Bat",
-  },
-  {
-    id: 1,
-    title: "Nom2",
-    author: "Bat",
-  },
-];
+import { request } from "node:http";
 
 const server = express();
 const port = 3000;
 
 server.use(express.json());
 
-server.get("/books/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-  const query = req.query;
-  console.log(query);
-  res.send("ok");
+// Одоо DELETE руу орцгооё!
+// DELETE бол хамгийн хялбар — body байхгүй, зөвхөн id-г params-аас авч устгасан гэж хариу буцаана:
+// DELETE 1-р бодлого 🟢
+// /user/:id зам үүсгэ. id-г авч доорх JSON буцаа:
+// json{
+//   "message": "Хэрэглэгч устгагдлаа!",
+//   "id": "1"
+// }
 
-  // const foundedbook = books.find((book) => String(book.id) === id);
+// server.delete("/user/:id", (req: Request, res: Response) => {
+//   const id = req.params.id;
 
-  // if (!foundedbook) {
-  //   res.status(404).send({ message: "not found" });
-  //   return;
-  // }
-  // const { title, author } = req.body;
-
-  // books = books.map((book) => {
-  //   if (String(book.id) === id) {
-  //     const updatedBooks = {
-  //       id: book.id,
-  //       title: title,
-  //       author: author,
-  //     };
-  //     return updatedBooks;
-  //   } else {
-  //     return book;
-  //   }
-});
-
-// console.log(id);
-
-// res.status(200).send(books);
+//   res.status(200).json({ message: "Хэрэглэгч устгагдлаа!", id });
 // });
 
-server.get("/books/:id", (req: Request, res: Response) => {
-  const query = req.query;
-  const { id } = req.params;
-  console.log("query: ", query);
-  res.send("ok");
+// DELETE 2-р бодлого 🟡
+// /product/:id зам үүсгэ. id-г авч доорх JSON буцаа:
+// json{
+//   "message": "Бүтээгдэхүүн устгагдлаа!",
+//   "id": "1"
+// }
+
+// server.delete("/product/:id", (req: Request, res: Response) => {
+//   const id = req.params.id;
+
+//   res.status(200).json({ message: "Бүтээгдэхүүн устгагдлаа!", id });
+// });
+
+// 3-р бодлого руу орцгооё! 💪
+
+// DELETE 3-р бодлого 🔴
+// /admin/user/:id зам үүсгэ. x-admin-token header байвал устгасан гэж JSON буцаа, байхгүй бол "Хандах эрхгүй!" буцаа:
+// json{
+//   "message": "Хэрэглэгч устгагдлаа!",
+//   "id": "1"
+// }
+
+server.delete("/admin/user/:id", (req: Request, res: Response) => {
+  const id = req.params.id;
+  const adminToken = req.headers["x-admin-token"];
+
+  if (adminToken) {
+    return res.status(200).json({ message: "устгагдлаа!", id });
+  } else {
+    return res.status(401).send("Хандах эрхгүй!");
+  }
 });
 
 server.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
