@@ -47,13 +47,13 @@ server.get("/users", (req: Request, res: Response) => {
 // const content = fs.readFileSync("users.txt", "utf-8")
 
 // 2. мөр бүрийг array болго
-const users = content.split("\n");
+// const users = content.split("\n");
 
 // 3. тэр нэрийг array-гаас хас
-const filtered = users.filter((user) => user !== name);
+// const filtered = users.filter((user) => user !== name);
 
 // 4. буцааж файлд бич
-fs.writeFileSync("users.txt", filtered.join("\n"));
+// fs.writeFileSync("users.txt", filtered.join("\n"));
 
 server.delete("/user", (req: Request, res: Response) => {
   const name = req.body.name;
